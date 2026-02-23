@@ -7,7 +7,7 @@ import { useUserProjects, useAssignConversationProject } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
-const isNewConversation = (id: string | undefined): boolean =>
+const isNewConversation = (id: string | null | undefined): boolean =>
   !id || id === 'new' || id === '';
 
 export default function ProjectSelector() {

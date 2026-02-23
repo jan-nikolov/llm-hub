@@ -70,7 +70,7 @@ describe('useUserProjects', () => {
       projects: [
         {
           _id: 'proj-1',
-          user: 'user-1',
+
           name: 'Test Project',
           description: 'A test project',
           createdAt: '2026-01-01T00:00:00Z',
@@ -110,7 +110,7 @@ describe('useCreateUserProject', () => {
     const input: CreateUserProjectBody = { name: 'New Project', description: 'desc' };
     const mockProject = {
       _id: 'proj-new',
-      user: 'user-1',
+
       name: 'New Project',
       description: 'desc',
       createdAt: '2026-01-01T00:00:00Z',
@@ -156,7 +156,7 @@ describe('useUpdateUserProject', () => {
     const data: UpdateUserProjectBody = { name: 'Updated Name' };
     const mockUpdated = {
       _id: id,
-      user: 'user-1',
+
       name: 'Updated Name',
       description: '',
       createdAt: '2026-01-01T00:00:00Z',
@@ -216,11 +216,12 @@ describe('useDeleteUserProject', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    const invalidatedKeys = invalidateSpy.mock.calls.map(
-      (call) => (call[0] as { queryKey: string[] }).queryKey[0],
-    );
-    expect(invalidatedKeys).toContain(QueryKeys.userProjects);
-    expect(invalidatedKeys).toContain(QueryKeys.memoryDocuments);
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: [QueryKeys.userProjects],
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: [QueryKeys.memoryDocuments],
+    });
   });
 });
 
@@ -234,7 +235,7 @@ describe('useMemoryDocuments', () => {
       documents: [
         {
           _id: 'doc-1',
-          user: 'user-1',
+
           scope: 'global',
           content: 'Some memory content',
           tokenCount: 42,
@@ -276,7 +277,7 @@ describe('useUpdateMemoryDocument', () => {
     const data: UpdateMemoryDocumentBody = { content: 'Updated memory content' };
     mockDataService.updateMemoryDocument.mockResolvedValueOnce({
       _id: 'doc-1',
-      user: 'user-1',
+
       scope,
       content: data.content,
       tokenCount: 50,
@@ -304,7 +305,7 @@ describe('useUpdateMemoryDocument', () => {
     const data: UpdateMemoryDocumentBody = { content: 'Project memory' };
     mockDataService.updateMemoryDocument.mockResolvedValueOnce({
       _id: 'doc-2',
-      user: 'user-1',
+
       scope,
       projectId,
       content: data.content,
