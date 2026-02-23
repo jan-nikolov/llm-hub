@@ -15,6 +15,15 @@ Fork of [LibreChat](https://github.com/danny-avila/LibreChat) (MIT license) aimi
 Self-hosted via Docker Compose behind a reverse proxy (Traefik).
 See `docker-compose.yml` and `.env.example` for setup instructions.
 
+## CI/CD
+
+- **Workflow:** `.github/workflows/deploy.yml` — builds Docker image to GHCR on push to `main`, then SSH-deploys to server.
+- **Trigger paths:** `api/**`, `client/**`, `packages/**`, `Dockerfile` — workflow files and docs don't trigger deploy.
+- **Manual deploy:** `gh workflow run deploy.yml --repo jan-nikolov/llm-hub --ref main`
+- **Rollback:** On server, change image tag in override to a specific SHA: `ghcr.io/jan-nikolov/llm-hub:<sha>`
+- **GitHub Secrets:** `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` — never hardcode server details.
+- **`gh` CLI gotcha:** This is a fork — always use `--repo jan-nikolov/llm-hub` with `gh` commands. Without it, `gh` may target the upstream `danny-avila/LibreChat`.
+
 ## Custom Features (Our Differentiator)
 
 Features we build ourselves because they are missing or immature in LibreChat:
@@ -29,6 +38,10 @@ Features we build ourselves because they are missing or immature in LibreChat:
 ## Key Files
 
 - `docs/plans/2026-02-22-llm-hub-design.md` — Initial design document with all decisions
+- `api/server/index.js` — Backend entry point (Express server)
+- `client/src/routes/Root.tsx` — Frontend entry point (React router)
+- `librechat.yaml` — Runtime configuration (endpoints, models, features)
+- `packages/data-provider/src/keys.ts` — QueryKeys and MutationKeys for React Query
 
 ## Upstream Sync
 
@@ -42,6 +55,11 @@ LibreChat upstream: https://github.com/danny-avila/LibreChat
 - All code, commits, docs, and comments in **English**
 - Docker Compose for container orchestration
 - Reverse proxy (Traefik) handles SSL termination and routing
+
+### Gotchas
+
+- **Express 5 route syntax:** Uses `path-to-regexp` v8 — optional params use `{/:param}` not `/:param?`. Example: `/memory-documents{/:scope}{/:projectId}`.
+- **Redis-dependent tests:** `cache_integration` and `stream_integration` tests fail locally without Redis. These are pre-existing upstream failures, not regressions.
 
 ---
 
