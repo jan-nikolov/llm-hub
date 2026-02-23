@@ -67,7 +67,7 @@ router.post('/synthesis/trigger', checkMemoryUpdate, async (req, res) => {
   }
 });
 
-router.get('/:scope/:projectId?', checkMemoryRead, async (req, res) => {
+router.get('/:scope{/:projectId}', checkMemoryRead, async (req, res) => {
   const { scope, projectId } = req.params;
 
   if (scope !== 'global' && scope !== 'project') {
@@ -97,7 +97,7 @@ router.get('/:scope/:projectId?', checkMemoryRead, async (req, res) => {
   }
 });
 
-router.put('/:scope/:projectId?', checkMemoryUpdate, async (req, res) => {
+router.put('/:scope{/:projectId}', checkMemoryUpdate, async (req, res) => {
   const { scope, projectId } = req.params;
   const { content } = req.body;
 
